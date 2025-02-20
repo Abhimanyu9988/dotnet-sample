@@ -18,6 +18,8 @@ RUN dotnet publish -c Release -o out
 # ========================
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
+RUN apt update -y
+RUN apt-get install -y procps curl
 
 ENV ASPNETCORE_URLS=http://0.0.0.0:5205
 # Copy the build output
