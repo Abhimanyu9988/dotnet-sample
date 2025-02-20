@@ -21,12 +21,12 @@ WORKDIR /app
 RUN apt update -y
 RUN apt-get install -y procps curl
 
-ENV ASPNETCORE_URLS=http://0.0.0.0:5205
+ENV ASPNETCORE_URLS=http://0.0.0.0:8080
 # Copy the build output
 COPY --from=build /app/out ./
 
 # Expose a port
-EXPOSE 5205
+EXPOSE 8080
 
 # Run the app
 ENTRYPOINT ["dotnet", "dotnet-sample.dll"]
