@@ -31,3 +31,4 @@
 /Users/abhibaj/AppDDevelopmentProjects/Dockerhub/dotnet-sample/obj/Debug/net9.0/dotnet-sample.pdb
 /Users/abhibaj/AppDDevelopmentProjects/Dockerhub/dotnet-sample/obj/Debug/net9.0/dotnet-sample.genruntimeconfig.cache
 /Users/abhibaj/AppDDevelopmentProjects/Dockerhub/dotnet-sample/obj/Debug/net9.0/ref/dotnet-sample.dll
+/Users/abhibaj/AppDDevelopmentProjects/Dockerhub/dotnet-sample/obj/Debug/net9.0/dotnet-sample.sourcelink.json

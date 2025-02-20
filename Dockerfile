@@ -19,12 +19,12 @@ RUN dotnet publish -c Release -o out
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
 
-ENV ASPNETCORE_URLS=http://0.0.0.0:80
+ENV ASPNETCORE_URLS=http://0.0.0.0:5205
 # Copy the build output
 COPY --from=build /app/out ./
 
 # Expose a port
-EXPOSE 80
+EXPOSE 5205
 
 # Run the app
 ENTRYPOINT ["dotnet", "dotnet-sample.dll"]
