@@ -1,0 +1,163 @@
+# Cluster agent deployment mode (PRIMARY | NAMESPACED)
+deploymentMode: PRIMARY
+
+installClusterAgent: true
+installInfraViz: true
+
+# Docker images
+imageInfo:
+  agentImage: docker.io/appdynamics/cluster-agent
+  agentTag: latest
+  #agentTag: 24.5.0-432
+  operatorImage: docker.io/appdynamics/cluster-agent-operator
+  operatorTag: latest
+  #operatorTag: 24.5.0-804
+  imagePullPolicy: Always                               # Will be used for operator pod
+  machineAgentImage: docker.io/appdynamics/machine-agent
+  machineAgentTag: latest
+  machineAgentWinImage: docker.io/appdynamics/machine-agent-analytics
+  machineAgentWinTag: win-latest
+  netVizImage: docker.io/appdynamics/machine-agent-netviz
+  netvizTag: latest
+
+# AppDynamics controller info (VALUES TO BE PROVIDED BY THE USER)
+controllerInfo:
+  url: https://controllerces.saas.appdynamics.com:443
+  #url: https://ces-controller.saas.appdynamics.com:443
+  account: controllerces
+  #account: ces-controller
+  #username:
+  #password:
+  #accessKey: bm9xa03c6d2p
+  #globalAccount: ces-controller_61b786ed-b42f-4d79-80f7-2ee7b5f3a4de       # To be provided when using machineAgent Window Image
+  #globalAccount: controllerces_cd2abc8f-ed2a-4d03-8666-08a564adf623
+
+  # SSL properties
+  customSSLCert: null
+
+  # Proxy config
+  authenticateProxy: false
+  proxyUrl: null
+  proxyUser: null
+  proxyPassword: null
+
+# RBAC config
+createServiceAccount: true
+agentServiceAccount: appdynamics-cluster-agent
+operatorServiceAccount: appdynamics-operator
+infravizServiceAccount: appdynamics-infraviz
+
+# Cluster agent config
+clusterAgent:
+  nsToMonitorRegex: .*
+  appName: us-support-eks-cluster
+  logProperties:
+    logFileSizeMb: 5
+    logFileBackups: 3
+    logLevel: DEBUG
+
+instrumentationConfig:
+  enabled: true #true
+  instrumentationMethod: Env #Env
+  numberOfTaskWorkers: 5
+  nsToInstrumentRegex: abhi-java-apps #any namespace you want to instrument
+#  defaultCustomConfig: "-Dappdynamics.agent.uniqueHostId=$(cat /proc/self/cgroup | head -1 | awk -F '/' '{print $NF}' | cut -c 16-27)"
+  defaultAppName: Abhi-personal-tomcat
+  defaultAnalyticsPort: 9090
+  defaultAnalyticsHost: analytics-cluster-appdynamics-infraviz.appdynamics.svc.cluster.local
+  defaultAnalyticsSslEnabled: false
+  appNameStrategy: label
+  #javaAgentCustomSSLKeystore: ssl-cert
+  #javaAgentCustomSSLKeystorePasswordSecret: changeit
+  resourcesToInstrument:
+  - Deployment
+  - StatefulSet
+  instrumentationRules:
+    - namespaceRegex: abhi-java-apps
+      matchString: hello-dotnet-run-as-user
+      language: dotnetcore
+      appNameLabel: app
+      runAsUser: 1001
+      runAsGroup: 1001
+      imageInfo:
+        image: "docker.io/appdynamics/dotnet-core-agent:latest"
+        #image: "docker.io/appdynamics/nodejs-agent:23.10.0-16-slim"
+        agentMountPath: /opt/appdynamics
+        imagePullPolicy: Always
+        alpineInitContainerImage: alpine:3.21
+     #customAgentConfigSource:
+     #  configMapName: appdynamics-config
+# Pod filter config
+podFilter: {}
+
+# InfraViz config
+infraViz:
+  nodeOS: "linux"
+  enableMasters: false
+  stdoutLogging: true
+  enableContainerHostId: true
+  enableContainerd: true
+  enableServerViz: true
+  enableDockerViz: false
+  logProperties:
+    logLevel: DEBUG
+
+
+
+netViz:
+  enabled: false
+  netVizPort: 3892
+  resourcesNetViz:
+    limits:
+      cpu: "20m"
+      memory: "500m"
+    requests:
+      cpu: "20m"
+      memory: "400m"
+
+# Agent pod specific properties
+agentPod:
+  nodeSelector: {}
+  tolerations: []
+  resources:
+    limits:
+      cpu: "100m"
+      memory: "300Mi"
+    requests:
+      cpu: "100m"
+      memory: "150Mi"
+  labels: {}
+
+# Operator pod specific properties
+operatorPod:
+  nodeSelector: {}
+  tolerations: []
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 64Mi
+
+# Infraviz pod specific properties
+infravizPod:
+#  nodeSelector:
+#    topology.kubernetes.io/zone: us-west-2a
+  resources:
+    limits:
+      cpu: 100m
+      memory: "1G"
+    requests:
+      cpu: 100m
+      memory: "800M"
+  #env:
+    #- name: APPDYNAMICS_AGENT_GLOBAL_ACCOUNT_NAME
+      #value: "controllerces_cd2abc8f-ed2a-4d03-8666-08a564adf623"
+    #  value: ces-controller_61b786ed-b42f-4d79-80f7-2ee7b5f3a4de
+  # overrideVolumeMounts property is valid only after 0.6.10 operator version
+  #overrideVolumeMounts:
+#  - boot
+# Subcharts boolean install switches
+install:
+  metrics-server: false

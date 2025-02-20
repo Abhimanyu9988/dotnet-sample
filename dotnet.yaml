@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: hello-dotnet
+    app: hello-dotnet
+  name: hello-dotnet
+  namespace: abhi-java-apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: hello-dotnet
+  template:
+    metadata:
+      labels:
+        run: hello-dotnet
+    spec:
+      containers:
+      - name: hello-dotnet
+        image: docker.io/abhimanyubajaj98/dotnet-sample:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
