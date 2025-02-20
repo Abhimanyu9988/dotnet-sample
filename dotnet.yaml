@@ -19,6 +19,6 @@ spec:
       containers:
       - name: hello-dotnet
         image: docker.io/abhimanyubajaj98/dotnet-sample:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         ports:
-        - containerPort: 80
+        - containerPort: 8080
