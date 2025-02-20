@@ -8,6 +8,8 @@ WORKDIR /app
 # Copy project file & restore
 COPY dotnet-sample.csproj .
 RUN dotnet restore dotnet-sample.csproj
+RUN apt update -y
+RUN apt-get install -y procps curl
 
 # Copy remaining source code & publish (Release)
 COPY . .
